@@ -70,9 +70,14 @@ export default function ViewerPage() {
 
         {/* Viewer */}
         <div className="flex-1">
-          {file?.file_url_server1 ? (
-            <iframe
-              src={`https://docs.google.com/viewer?url=${encodeURIComponent(file.file_url_server1)}&embedded=true`}
+{file?.file_url_server1 ? (
+  <iframe
+    src={file.file_url_server1}
+    className="w-full rounded-xl border border-gray-200 bg-white"
+    style={{ height: '70vh' }}
+    title={file?.title}
+    allow="autoplay"
+  />
               className="w-full rounded-xl border border-gray-200 bg-white"
               style={{ height: '70vh' }}
               title={file?.title}
