@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { ChevronRight, FileText, ArrowLeft } from 'lucide-react'
+import { ChevronRight, FileText } from 'lucide-react'
 
 const SECTIONS = [
   { key: 'cours', label: 'Cours' },
