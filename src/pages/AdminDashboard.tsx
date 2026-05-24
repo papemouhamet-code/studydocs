@@ -18,7 +18,7 @@ export default function AdminDashboard() {
   const [newSubCatId, setNewSubCatId] = useState('')
   const [newCourseName, setNewCourseName] = useState('')
   const [newCourseSubId, setNewCourseSubId] = useState('')
-  const [newFile, setNewFile] = useState({ title: '', section: 'cours', course_id: '', file_url_server1: '', file_url_server2: '', file_url_server3: '', file_type: 'PDF', file_size: '', order_index: 0 })
+const [newFile, setNewFile] = useState({ title: '', section: 'cours', course_id: '', file_url_preview: '', file_url_server1: '', file_url_server2: '', file_url_server3: '', tuto_url_server1: '', tuto_url_server2: '', tuto_url_server3: '', file_type: 'PDF', file_size: '', order_index: 0 })
 
   useEffect(() => {
     checkAuth()
@@ -228,7 +228,15 @@ export default function AdminDashboard() {
                 <option value="autres">Autres fichiers</option>
               </select>
               <input className={inputClass} placeholder="Type (PDF, DOCX...)" value={newFile.file_type} onChange={e => setNewFile({ ...newFile, file_type: e.target.value })} />
-              <input className={inputClass} placeholder="Lien Serveur 1" value={newFile.file_url_server1} onChange={e => setNewFile({ ...newFile, file_url_server1: e.target.value })} />
+<input className={inputClass} placeholder="Lien Aperçu (pour visionner)" value={newFile.file_url_preview} onChange={e => setNewFile({ ...newFile, file_url_preview: e.target.value })} />
+<input className={inputClass} placeholder="Lien Téléchargement Serveur 1" value={newFile.file_url_server1} onChange={e => setNewFile({ ...newFile, file_url_server1: e.target.value })} />
+<input className={inputClass} placeholder="Lien Téléchargement Serveur 2 (optionnel)" value={newFile.file_url_server2} onChange={e => setNewFile({ ...newFile, file_url_server2: e.target.value })} />
+<input className={inputClass} placeholder="Lien Téléchargement Serveur 3 (optionnel)" value={newFile.file_url_server3} onChange={e => setNewFile({ ...newFile, file_url_server3: e.target.value })} />
+<input className={inputClass} placeholder="Vidéo tutoriel Serveur 1 (optionnel)" value={newFile.tuto_url_server1} onChange={e => setNewFile({ ...newFile, tuto_url_server1: e.target.value })} />
+<input className={inputClass} placeholder="Vidéo tutoriel Serveur 2 (optionnel)" value={newFile.tuto_url_server2} onChange={e => setNewFile({ ...newFile, tuto_url_server2: e.target.value })} />
+<input className={inputClass} placeholder="Vidéo tutoriel Serveur 3 (optionnel)" value={newFile.tuto_url_server3} onChange={e => setNewFile({ ...newFile, tuto_url_server3: e.target.value })} />
+<input className={inputClass} placeholder="Type (PDF, DOCX...)" value={newFile.file_type} onChange={e => setNewFile({ ...newFile, file_type: e.target.value })} />
+<input className={inputClass} placeholder="Taille (ex: 2.5 MB)" value={newFile.file_size} onChange={e => setNewFile({ ...newFile, file_size: e.target.value })} />
               <input className={inputClass} placeholder="Lien Serveur 2 (optionnel)" value={newFile.file_url_server2} onChange={e => setNewFile({ ...newFile, file_url_server2: e.target.value })} />
               <input className={inputClass} placeholder="Lien Serveur 3 (optionnel)" value={newFile.file_url_server3} onChange={e => setNewFile({ ...newFile, file_url_server3: e.target.value })} />
               <input className={inputClass} placeholder="Taille (ex: 2.5 MB)" value={newFile.file_size} onChange={e => setNewFile({ ...newFile, file_size: e.target.value })} />

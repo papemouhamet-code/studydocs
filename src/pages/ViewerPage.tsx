@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { Download, ChevronRight, FileText } from 'lucide-react'
+import { Download, ChevronRight, FileText, PlayCircle } from 'lucide-react'
 
 export default function ViewerPage() {
   const { courseId, section, fileId } = useParams()
@@ -14,7 +14,6 @@ export default function ViewerPage() {
     supabase.from('files').select('*').eq('id', fileId).single().then(({ data }) => {
       if (data) {
         setFile(data)
-        // Save to recently viewed
         const viewed = JSON.parse(localStorage.getItem('recentlyViewed') || '[]')
         const newItem = { courseId, fileId, title: data.title, timestamp: new Date().toISOString() }
         const filtered = viewed.filter((v: any) => v.fileId !== fileId)
@@ -43,7 +42,9 @@ export default function ViewerPage() {
             <span className="text-white">{file?.title}</span>
           </div>
           <h1 className="text-xl font-bold">{file?.title}</h1>
-          <p className="text-indigo-200 text-sm mt-1">{file?.file_type || 'PDF'} {file?.file_size ? `· ${file.file_size}` : ''} · Ajouté le {file?.created_at ? new Date(file.created_at).toLocaleDateString('fr-FR') : ''}</p>
+          <p className="text-indigo-200 text-sm mt-1">
+            {file?.file_type || 'PDF'} {file?.file_size ? `· ${file.file_size}` : ''} · Ajouté le {file?.created_at ? new Date(file.created_at).toLocaleDateString('fr-FR') : ''}
+          </p>
         </div>
       </div>
 
@@ -63,57 +64,81 @@ export default function ViewerPage() {
               </div>
             ))}
           </div>
-
           {/* Ad sidebar */}
           <div id="ad-sidebar" className="mt-4">{/* AdSense placement */}</div>
         </div>
 
-        {/* Viewer */}
+        {/* Main */}
         <div className="flex-1">
-{file?.file_url_server1 ? (
-  <iframe
-    src={file.file_url_server1}
-    className="w-full rounded-xl border border-gray-200 bg-white"
-    style={{ height: '70vh' }}
-    title={file?.title}
-    allow="autoplay"
-  />
+          {/* Viewer */}
+          {file?.file_url_preview ? (
+            <iframe
+              src={file.file_url_preview}
               className="w-full rounded-xl border border-gray-200 bg-white"
               style={{ height: '70vh' }}
               title={file?.title}
+              allow="autoplay"
             />
           ) : (
             <div className="w-full rounded-xl border border-gray-200 bg-white flex items-center justify-center" style={{ height: '70vh' }}>
               <div className="text-center text-gray-400">
                 <FileText size={48} className="mx-auto mb-3 opacity-30" />
-                <p>Aperçu non disponible</p>
+                <p className="font-medium">Aperçu non disponible</p>
+                <p className="text-sm mt-1">Téléchargez le document ci-dessous</p>
               </div>
             </div>
           )}
 
           {/* Download buttons */}
-          <div className="mt-4 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-            <p className="text-sm font-semibold text-gray-600 mb-3">Télécharger le document</p>
-            <div className="flex flex-wrap gap-3">
+          <div className="mt-4 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <p className="text-sm font-semibold text-gray-700 mb-3">⬇️ Télécharger le document</p>
+            <div className="flex flex-wrap gap-3 mb-5">
               {file?.file_url_server1 && (
                 <a href={file.file_url_server1} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm transition">
-                  <Download size={16} /> Télécharger (Serveur 1)
+                  <Download size={16} /> Télécharger Serveur 1
                 </a>
               )}
               {file?.file_url_server2 && (
                 <a href={file.file_url_server2} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm transition">
-                  <Download size={16} /> Télécharger (Serveur 2)
+                  <Download size={16} /> Télécharger Serveur 2
                 </a>
               )}
               {file?.file_url_server3 && (
                 <a href={file.file_url_server3} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 bg-indigo-400 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm transition">
-                  <Download size={16} /> Télécharger (Serveur 3)
+                  <Download size={16} /> Télécharger Serveur 3
                 </a>
               )}
             </div>
+
+            {/* Tutorial buttons */}
+            {(file?.tuto_url_server1 || file?.tuto_url_server2 || file?.tuto_url_server3) && (
+              <>
+                <p className="text-sm font-semibold text-gray-700 mb-3">🎬 Comment télécharger ?</p>
+                <div className="flex flex-wrap gap-3">
+                  {file?.tuto_url_server1 && (
+                    <a href={file.tuto_url_server1} target="_blank" rel="noreferrer"
+                      className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm transition">
+                      <PlayCircle size={16} className="text-red-500" /> Comment télécharger Serveur 1
+                    </a>
+                  )}
+                  {file?.tuto_url_server2 && (
+                    <a href={file.tuto_url_server2} target="_blank" rel="noreferrer"
+                      className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm transition">
+                      <PlayCircle size={16} className="text-red-500" /> Comment télécharger Serveur 2
+                    </a>
+                  )}
+                  {file?.tuto_url_server3 && (
+                    <a href={file.tuto_url_server3} target="_blank" rel="noreferrer"
+                      className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm transition">
+                      <PlayCircle size={16} className="text-red-500" /> Comment télécharger Serveur 3
+                    </a>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
