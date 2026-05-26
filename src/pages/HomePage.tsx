@@ -56,9 +56,9 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-3">
             <BookOpen size={32} />
-            <h1 className="text-3xl font-bold">StudyDocs</h1>
+            <h1 className="text-3xl font-bold">UnivPDF</h1>
           </div>
-          <p className="text-indigo-200 mb-6">Votre bibliothèque de cours en ligne</p>
+          <p className="text-indigo-200 mb-6">Votre bibliothèque universitaire en ligne</p>
           <div className="relative max-w-xl mx-auto">
             <Search className="absolute left-3 top-3 text-gray-400" size={20} />
             <input
