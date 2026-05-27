@@ -21,7 +21,9 @@ export default function AdminDashboard() {
     title: '', section: 'cours', course_id: '',
     file_url_preview: '',
     file_url_server1: '', file_url_server2: '', file_url_server3: '',
-    tuto_url_server1: '', tuto_url_server2: '', tuto_url_server3: '',
+    tuto_url_server1: 'https://youtu.be/NBWKro4UK8Q',
+    tuto_url_server2: 'https://youtu.be/GCFLF5MVSLI',
+    tuto_url_server3: 'https://youtu.be/QGM0qFCNPNA1',
     file_type: 'PDF', file_size: '', order_index: 0
   })
 
@@ -85,7 +87,15 @@ export default function AdminDashboard() {
   const addFile = async () => {
     if (!newFile.title.trim() || !newFile.course_id) return
     await supabase.from('files').insert(newFile)
-    setNewFile({ title: '', section: 'cours', course_id: '', file_url_preview: '', file_url_server1: '', file_url_server2: '', file_url_server3: '', tuto_url_server1: '', tuto_url_server2: '', tuto_url_server3: '', file_type: 'PDF', file_size: '', order_index: 0 })
+    setNewFile({
+      title: '', section: 'cours', course_id: '',
+      file_url_preview: '',
+      file_url_server1: '', file_url_server2: '', file_url_server3: '',
+      tuto_url_server1: 'https://youtu.be/NBWKro4UK8Q',
+      tuto_url_server2: 'https://youtu.be/GCFLF5MVSLI',
+      tuto_url_server3: 'https://youtu.be/QGM0qFCNPNA1',
+      file_type: 'PDF', file_size: '', order_index: 0
+    })
     loadAll()
   }
 
@@ -101,7 +111,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-indigo-600 text-white px-4 py-4 flex items-center justify-between">
-        <h1 className="font-bold text-lg">Panel Admin — StudyDocs</h1>
+        <h1 className="font-bold text-lg">Panel Admin — UnivPDF</h1>
         <button onClick={logout} className="flex items-center gap-2 text-indigo-200 hover:text-white text-sm">
           <LogOut size={16} /> Déconnexion
         </button>
@@ -217,9 +227,9 @@ export default function AdminDashboard() {
               <input className={inputClass} placeholder="Lien Téléchargement Serveur 1" value={newFile.file_url_server1} onChange={e => setNewFile({ ...newFile, file_url_server1: e.target.value })} />
               <input className={inputClass} placeholder="Lien Téléchargement Serveur 2 (optionnel)" value={newFile.file_url_server2} onChange={e => setNewFile({ ...newFile, file_url_server2: e.target.value })} />
               <input className={inputClass} placeholder="Lien Téléchargement Serveur 3 (optionnel)" value={newFile.file_url_server3} onChange={e => setNewFile({ ...newFile, file_url_server3: e.target.value })} />
-              <input className={inputClass} placeholder="Vidéo tutoriel Serveur 1 (optionnel)" value={newFile.tuto_url_server1} onChange={e => setNewFile({ ...newFile, tuto_url_server1: e.target.value })} />
-              <input className={inputClass} placeholder="Vidéo tutoriel Serveur 2 (optionnel)" value={newFile.tuto_url_server2} onChange={e => setNewFile({ ...newFile, tuto_url_server2: e.target.value })} />
-              <input className={inputClass} placeholder="Vidéo tutoriel Serveur 3 (optionnel)" value={newFile.tuto_url_server3} onChange={e => setNewFile({ ...newFile, tuto_url_server3: e.target.value })} />
+              <input className={inputClass} placeholder="Vidéo tutoriel Serveur 1" value={newFile.tuto_url_server1} onChange={e => setNewFile({ ...newFile, tuto_url_server1: e.target.value })} />
+              <input className={inputClass} placeholder="Vidéo tutoriel Serveur 2" value={newFile.tuto_url_server2} onChange={e => setNewFile({ ...newFile, tuto_url_server2: e.target.value })} />
+              <input className={inputClass} placeholder="Vidéo tutoriel Serveur 3" value={newFile.tuto_url_server3} onChange={e => setNewFile({ ...newFile, tuto_url_server3: e.target.value })} />
             </div>
             <button className={btnAdd} onClick={addFile}><Plus size={16} /> Ajouter le fichier</button>
             <div className="flex flex-col gap-2 mt-6">
