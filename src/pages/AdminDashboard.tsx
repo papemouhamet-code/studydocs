@@ -17,6 +17,12 @@ export default function AdminDashboard() {
   const [newSubCatId, setNewSubCatId] = useState('')
   const [newCourseName, setNewCourseName] = useState('')
   const [newCourseSubId, setNewCourseSubId] = useState('')
+  const [newCourseDesc, setNewCourseDesc] = useState('')
+  const [newCourseTags, setNewCourseTags] = useState('')
+
+  // File form with category/subcategory filter
+  const [fileCatId, setFileCatId] = useState('')
+  const [fileSubId, setFileSubId] = useState('')
   const [newFile, setNewFile] = useState({
     title: '', section: 'cours', course_id: '',
     file_url_preview: '',
@@ -75,8 +81,14 @@ export default function AdminDashboard() {
 
   const addCourse = async () => {
     if (!newCourseName.trim() || !newCourseSubId) return
-    await supabase.from('courses').insert({ name: newCourseName.trim(), slug: slug(newCourseName), subcategory_id: newCourseSubId })
-    setNewCourseName(''); loadAll()
+    await supabase.from('courses').insert({
+      name: newCourseName.trim(),
+      slug: slug(newCourseName),
+      subcategory_id: newCourseSubId,
+      description: newCourseDesc.trim(),
+      tags: newCourseTags.trim()
+    })
+    setNewCourseName(''); setNewCourseDesc(''); setNewCourseTags(''); loadAll()
   }
 
   const deleteCourse = async (id: string) => {
@@ -103,6 +115,13 @@ export default function AdminDashboard() {
     if (!confirm('Supprimer ce fichier ?')) return
     await supabase.from('files').delete().eq('id', id); loadAll()
   }
+
+  const filteredSubs = subcategories.filter(s => !fileCatId || s.category_id === fileCatId)
+  const filteredCourses = courses.filter(c => {
+    if (fileSubId) return c.subcategory_id === fileSubId
+    if (fileCatId) return filteredSubs.some(s => s.id === c.subcategory_id)
+    return true
+  })
 
   const inputClass = "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-400"
   const btnAdd = "flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm transition"
@@ -187,15 +206,17 @@ export default function AdminDashboard() {
         {tab === 'courses' && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-semibold text-gray-800 mb-4">Ajouter un cours</h2>
-            <div className="flex gap-3 mb-6 flex-wrap">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <select className={inputClass} value={newCourseSubId} onChange={e => setNewCourseSubId(e.target.value)}>
                 <option value="">Choisir une sous-catégorie</option>
                 {subcategories.map(s => <option key={s.id} value={s.id}>{s.name} — {s.categories?.name}</option>)}
               </select>
               <input className={inputClass} placeholder="Nom du cours" value={newCourseName} onChange={e => setNewCourseName(e.target.value)} />
-              <button className={btnAdd} onClick={addCourse}><Plus size={16} /> Ajouter</button>
+              <textarea className={inputClass} placeholder="Description du cours (optionnel)" value={newCourseDesc} onChange={e => setNewCourseDesc(e.target.value)} rows={3} style={{gridColumn: '1 / -1'}} />
+              <input className={inputClass} placeholder="Tags séparés par virgule (ex: algèbre, maths, L1)" value={newCourseTags} onChange={e => setNewCourseTags(e.target.value)} style={{gridColumn: '1 / -1'}} />
             </div>
-            <div className="flex flex-col gap-2">
+            <button className={btnAdd} onClick={addCourse}><Plus size={16} /> Ajouter</button>
+            <div className="flex flex-col gap-2 mt-6">
               {courses.map(c => (
                 <div key={c.id} className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg">
                   <span className="text-sm text-gray-800">{c.name} <span className="text-gray-400">— {c.subcategories?.name}</span></span>
@@ -209,11 +230,31 @@ export default function AdminDashboard() {
         {tab === 'files' && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-semibold text-gray-800 mb-4">Ajouter un fichier</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+              <div>
+                <p className="text-xs font-semibold text-indigo-600 mb-1">1. Catégorie</p>
+                <select className={inputClass} value={fileCatId} onChange={e => { setFileCatId(e.target.value); setFileSubId(''); setNewFile({...newFile, course_id: ''}) }}>
+                  <option value="">Toutes les catégories</option>
+                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-indigo-600 mb-1">2. Sous-catégorie</p>
+                <select className={inputClass} value={fileSubId} onChange={e => { setFileSubId(e.target.value); setNewFile({...newFile, course_id: ''}) }}>
+                  <option value="">Toutes les sous-catégories</option>
+                  {filteredSubs.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-indigo-600 mb-1">3. Cours</p>
+                <select className={inputClass} value={newFile.course_id} onChange={e => setNewFile({ ...newFile, course_id: e.target.value })}>
+                  <option value="">Choisir un cours</option>
+                  {filteredCourses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              <select className={inputClass} value={newFile.course_id} onChange={e => setNewFile({ ...newFile, course_id: e.target.value })}>
-                <option value="">Choisir un cours</option>
-                {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
               <input className={inputClass} placeholder="Titre du fichier" value={newFile.title} onChange={e => setNewFile({ ...newFile, title: e.target.value })} />
               <select className={inputClass} value={newFile.section} onChange={e => setNewFile({ ...newFile, section: e.target.value })}>
                 <option value="cours">Cours</option>
@@ -222,8 +263,8 @@ export default function AdminDashboard() {
                 <option value="autres">Autres fichiers</option>
               </select>
               <input className={inputClass} placeholder="Type (PDF, DOCX...)" value={newFile.file_type} onChange={e => setNewFile({ ...newFile, file_type: e.target.value })} />
-              <input className={inputClass} placeholder="Lien Aperçu (pour visionner)" value={newFile.file_url_preview} onChange={e => setNewFile({ ...newFile, file_url_preview: e.target.value })} />
               <input className={inputClass} placeholder="Taille (ex: 2.5 MB)" value={newFile.file_size} onChange={e => setNewFile({ ...newFile, file_size: e.target.value })} />
+              <input className={inputClass} placeholder="Lien Aperçu (pour visionner)" value={newFile.file_url_preview} onChange={e => setNewFile({ ...newFile, file_url_preview: e.target.value })} />
               <input className={inputClass} placeholder="Lien Téléchargement Serveur 1" value={newFile.file_url_server1} onChange={e => setNewFile({ ...newFile, file_url_server1: e.target.value })} />
               <input className={inputClass} placeholder="Lien Téléchargement Serveur 2 (optionnel)" value={newFile.file_url_server2} onChange={e => setNewFile({ ...newFile, file_url_server2: e.target.value })} />
               <input className={inputClass} placeholder="Lien Téléchargement Serveur 3 (optionnel)" value={newFile.file_url_server3} onChange={e => setNewFile({ ...newFile, file_url_server3: e.target.value })} />
@@ -232,6 +273,7 @@ export default function AdminDashboard() {
               <input className={inputClass} placeholder="Vidéo tutoriel Serveur 3" value={newFile.tuto_url_server3} onChange={e => setNewFile({ ...newFile, tuto_url_server3: e.target.value })} />
             </div>
             <button className={btnAdd} onClick={addFile}><Plus size={16} /> Ajouter le fichier</button>
+
             <div className="flex flex-col gap-2 mt-6">
               {files.map(f => (
                 <div key={f.id} className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg">
