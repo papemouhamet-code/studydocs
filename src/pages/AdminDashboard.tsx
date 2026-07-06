@@ -21,8 +21,9 @@ export default function AdminDashboard() {
   const [newCourseTags, setNewCourseTags] = useState('')
 
   // File form with category/subcategory filter
-  const [fileCatId, setFileCatId] = useState('')
-  const [fileSubId, setFileSubId] = useState('')
+const [fileCatId, setFileCatId] = useState('')
+const [fileSubId, setFileSubId] = useState('')
+const [editingFile, setEditingFile] = useState<any>(null)
   const [newFile, setNewFile] = useState({
     title: '', section: 'cours', course_id: '',
     file_url_preview: '',
@@ -103,7 +104,7 @@ export default function AdminDashboard() {
       title: '', section: 'cours', course_id: '',
       file_url_preview: '',
       file_url_server1: '', file_url_server2: '', file_url_server3: '',
-      tuto_url_server1: 'https://youtu.be/NBWKro4UK8Q',
+      tuto_url_server1: 'https://youtu.be/MvnFL1_KQb0',
       tuto_url_server2: 'https://youtu.be/GCFLF5MVSLI',
       tuto_url_server3: 'https://youtu.be/QGM0qFCNPNA1',
       file_type: 'PDF', file_size: '', order_index: 0
@@ -115,7 +116,84 @@ export default function AdminDashboard() {
     if (!confirm('Supprimer ce fichier ?')) return
     await supabase.from('files').delete().eq('id', id); loadAll()
   }
+const updateFile = async () => {
+  if (!editingFile) return
+  await supabase.from('files').update({
+    title: editingFile.title,
+    section: editingFile.section,
+    file_url_preview: editingFile.file_url_preview,
+    file_url_server1: editingFile.file_url_server1,
+    file_url_server2: editingFile.file_url_server2,
+    file_url_server3: editingFile.file_url_server3,
+    tuto_url_server1: editingFile.tuto_url_server1,
+    tuto_url_server2: editingFile.tuto_url_server2,
+    tuto_url_server3: editingFile.tuto_url_server3,
+    file_type: editingFile.file_type,
+    file_size: editingFile.file_size,
+  }).eq('id', editingFile.id)
+  setEditingFile(null)
+  loadAll()
+}
+Ensuite cherche cette partie dans la liste des fichiers :
+tsx<div className="flex flex-col gap-2 mt-6">
+  {files.map(f => (
+    <div key={f.id} className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg">
+      <div>
+        <p className="text-sm text-gray-800">{f.title}</p>
+        <p className="text-xs text-gray-400">{f.courses?.name} — {f.section}</p>
+      </div>
+      <button className={btnDel} onClick={() => deleteFile(f.id)}><Trash2 size={16} /></button>
+    </div>
+  ))}
+</div>
+Remplace par :
+tsx{editingFile && (
+  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+    <h3 className="font-semibold text-gray-800 mb-3">Modifier le fichier</h3>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <input className={inputClass} placeholder="Titre" value={editingFile.title} onChange={e => setEditingFile({...editingFile, title: e.target.value})} />
+      <select className={inputClass} value={editingFile.section} onChange={e => setEditingFile({...editingFile, section: e.target.value})}>
+        <option value="cours">Cours</option>
+        <option value="exercices">Exercices / TD / TP / Examens</option>
+        <option value="cas">Études de cas & Traitement</option>
+        <option value="autres">Autres fichiers</option>
+      </select>
+      <input className={inputClass} placeholder="Lien Aperçu" value={editingFile.file_url_preview || ''} onChange={e => setEditingFile({...editingFile, file_url_preview: e.target.value})} />
+      <input className={inputClass} placeholder="Type (PDF, DOCX...)" value={editingFile.file_type || ''} onChange={e => setEditingFile({...editingFile, file_type: e.target.value})} />
+      <input className={inputClass} placeholder="Lien Serveur 1" value={editingFile.file_url_server1 || ''} onChange={e => setEditingFile({...editingFile, file_url_server1: e.target.value})} />
+      <input className={inputClass} placeholder="Lien Serveur 2" value={editingFile.file_url_server2 || ''} onChange={e => setEditingFile({...editingFile, file_url_server2: e.target.value})} />
+      <input className={inputClass} placeholder="Lien Serveur 3" value={editingFile.file_url_server3 || ''} onChange={e => setEditingFile({...editingFile, file_url_server3: e.target.value})} />
+      <input className={inputClass} placeholder="Taille" value={editingFile.file_size || ''} onChange={e => setEditingFile({...editingFile, file_size: e.target.value})} />
+      <input className={inputClass} placeholder="Vidéo tutoriel Serveur 1" value={editingFile.tuto_url_server1 || ''} onChange={e => setEditingFile({...editingFile, tuto_url_server1: e.target.value})} />
+      <input className={inputClass} placeholder="Vidéo tutoriel Serveur 2" value={editingFile.tuto_url_server2 || ''} onChange={e => setEditingFile({...editingFile, tuto_url_server2: e.target.value})} />
+      <input className={inputClass} placeholder="Vidéo tutoriel Serveur 3" value={editingFile.tuto_url_server3 || ''} onChange={e => setEditingFile({...editingFile, tuto_url_server3: e.target.value})} />
+    </div>
+    <div className="flex gap-3">
+      <button className={btnAdd} onClick={updateFile}>Enregistrer</button>
+      <button onClick={() => setEditingFile(null)} className="px-4 py-2 rounded-lg text-sm border border-gray-200 hover:bg-gray-100 transition">Annuler</button>
+    </div>
+  </div>
+)}
 
+<div className="flex flex-col gap-2 mt-6">
+  {files.map(f => (
+    <div key={f.id} className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg">
+      <div>
+        <p className="text-sm text-gray-800">{f.title}</p>
+        <p className="text-xs text-gray-400">{f.courses?.name} — {f.section}</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <button onClick={() => setEditingFile(f)} className="text-indigo-400 hover:text-indigo-600 transition text-xs border border-indigo-200 px-2 py-1 rounded-lg">Modifier</button>
+        <button className={btnDel} onClick={() => deleteFile(f.id)}><Trash2 size={16} /></button>
+      </div>
+    </div>
+  ))}
+</div>
+Sauvegarde Ctrl+S puis dans le terminal :
+git add .
+git commit -m "modifier fichiers admin"
+git push
+Dis-moi quand c'est fait.Vous n’
   const filteredSubs = subcategories.filter(s => !fileCatId || s.category_id === fileCatId)
   const filteredCourses = courses.filter(c => {
     if (fileSubId) return c.subcategory_id === fileSubId
@@ -274,20 +352,48 @@ export default function AdminDashboard() {
             </div>
             <button className={btnAdd} onClick={addFile}><Plus size={16} /> Ajouter le fichier</button>
 
-            <div className="flex flex-col gap-2 mt-6">
-              {files.map(f => (
-                <div key={f.id} className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm text-gray-800">{f.title}</p>
-                    <p className="text-xs text-gray-400">{f.courses?.name} — {f.section}</p>
-                  </div>
-                  <button className={btnDel} onClick={() => deleteFile(f.id)}><Trash2 size={16} /></button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+            {editingFile && (
+  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+    <h3 className="font-semibold text-gray-800 mb-3">Modifier le fichier</h3>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <input className={inputClass} placeholder="Titre" value={editingFile.title} onChange={e => setEditingFile({...editingFile, title: e.target.value})} />
+      <select className={inputClass} value={editingFile.section} onChange={e => setEditingFile({...editingFile, section: e.target.value})}>
+        <option value="cours">Cours</option>
+        <option value="exercices">Exercices / TD / TP / Examens</option>
+        <option value="cas">Études de cas & Traitement</option>
+        <option value="autres">Autres fichiers</option>
+      </select>
+      <input className={inputClass} placeholder="Lien Aperçu" value={editingFile.file_url_preview || ''} onChange={e => setEditingFile({...editingFile, file_url_preview: e.target.value})} />
+      <input className={inputClass} placeholder="Type (PDF, DOCX...)" value={editingFile.file_type || ''} onChange={e => setEditingFile({...editingFile, file_type: e.target.value})} />
+      <input className={inputClass} placeholder="Lien Serveur 1" value={editingFile.file_url_server1 || ''} onChange={e => setEditingFile({...editingFile, file_url_server1: e.target.value})} />
+      <input className={inputClass} placeholder="Lien Serveur 2" value={editingFile.file_url_server2 || ''} onChange={e => setEditingFile({...editingFile, file_url_server2: e.target.value})} />
+      <input className={inputClass} placeholder="Lien Serveur 3" value={editingFile.file_url_server3 || ''} onChange={e => setEditingFile({...editingFile, file_url_server3: e.target.value})} />
+      <input className={inputClass} placeholder="Taille" value={editingFile.file_size || ''} onChange={e => setEditingFile({...editingFile, file_size: e.target.value})} />
+      <input className={inputClass} placeholder="Vidéo tutoriel Serveur 1" value={editingFile.tuto_url_server1 || ''} onChange={e => setEditingFile({...editingFile, tuto_url_server1: e.target.value})} />
+      <input className={inputClass} placeholder="Vidéo tutoriel Serveur 2" value={editingFile.tuto_url_server2 || ''} onChange={e => setEditingFile({...editingFile, tuto_url_server2: e.target.value})} />
+      <input className={inputClass} placeholder="Vidéo tutoriel Serveur 3" value={editingFile.tuto_url_server3 || ''} onChange={e => setEditingFile({...editingFile, tuto_url_server3: e.target.value})} />
+    </div>
+    <div className="flex gap-3">
+      <button className={btnAdd} onClick={updateFile}>Enregistrer</button>
+      <button onClick={() => setEditingFile(null)} className="px-4 py-2 rounded-lg text-sm border border-gray-200 hover:bg-gray-100 transition">Annuler</button>
+    </div>
+  </div>
+)}
+
+<div className="flex flex-col gap-2 mt-6">
+  {files.map(f => (
+    <div key={f.id} className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg">
+      <div>
+        <p className="text-sm text-gray-800">{f.title}</p>
+        <p className="text-xs text-gray-400">{f.courses?.name} — {f.section}</p>
       </div>
+      <div className="flex items-center gap-3">
+        <button onClick={() => setEditingFile(f)} className="text-indigo-400 hover:text-indigo-600 transition text-xs border border-indigo-200 px-2 py-1 rounded-lg">Modifier</button>
+        <button className={btnDel} onClick={() => deleteFile(f.id)}><Trash2 size={16} /></button>
+      </div>
+    </div>
+  ))}
+</div>
     </div>
   )
 }
