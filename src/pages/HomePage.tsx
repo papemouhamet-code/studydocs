@@ -73,7 +73,7 @@ export default function HomePage() {
     <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
       {/* 1. NAVBAR */}
-      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-6 sticky top-0 z-50">
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-6 fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <div style={{background: '#7c3aed'}} className="p-1.5 rounded-lg">
             <BookOpen size={20} className="text-white" />
@@ -103,6 +103,7 @@ export default function HomePage() {
           )}
         </div>
       </nav>
+      <div style={{height: '64px'}}></div>
 
       {/* 2. HERO */}
       <div className="text-center py-20 px-4">

@@ -33,7 +33,7 @@ export default function ViewerPage() {
     <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
       {/* Navbar */}
-      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 sticky top-0 z-50 flex-wrap">
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 fixed top-0 left-0 right-0 z-50 flex-wrap">
         <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white transition flex items-center gap-1">
           <ArrowLeft size={16} /> Accueil
         </button>
@@ -44,6 +44,7 @@ export default function ViewerPage() {
         <ChevronRight size={14} className="text-gray-600" />
         <span className="text-white truncate max-w-xs">{file?.title}</span>
       </nav>
+      <div style={{height: '64px'}}></div>
 
       {/* Ad top */}
       <div id="ad-top" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
@@ -72,7 +73,6 @@ export default function ViewerPage() {
         {/* Main */}
         <div className="flex-1">
 
-          {/* File info */}
           <div className="mb-4">
             <h1 className="text-xl font-bold text-white">{file?.title}</h1>
             <p className="text-gray-400 text-sm mt-1">
@@ -80,7 +80,6 @@ export default function ViewerPage() {
             </p>
           </div>
 
-          {/* Viewer */}
           {file?.file_url_preview ? (
             <iframe
               src={file.file_url_preview}
@@ -100,10 +99,7 @@ export default function ViewerPage() {
             </div>
           )}
 
-          {/* Download & Tutorial */}
           <div style={{background: '#161b22', border: '1px solid #30363d'}} className="mt-4 rounded-xl p-5">
-
-            {/* Single download button */}
             {file?.file_url_server1 && (
               <a href={file.file_url_server1} target="_blank" rel="noreferrer"
                 style={{background: '#7c3aed'}}
@@ -118,8 +114,6 @@ export default function ViewerPage() {
                 <Download size={18} /> Télécharger (Serveur 2)
               </a>
             )}
-
-            {/* Single tutorial button */}
             {file?.tuto_url_server1 && (
               <a href={file.tuto_url_server1} target="_blank" rel="noreferrer"
                 style={{background: '#21262d', border: '1px solid #30363d'}}

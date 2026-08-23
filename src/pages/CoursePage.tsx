@@ -42,7 +42,7 @@ export default function CoursePage() {
     <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
       {/* Navbar */}
-      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 sticky top-0 z-50 flex-wrap">
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 fixed top-0 left-0 right-0 z-50 flex-wrap">
         <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white transition flex items-center gap-1">
           <ArrowLeft size={16} /> Accueil
         </button>
@@ -57,16 +57,15 @@ export default function CoursePage() {
         <ChevronRight size={14} className="text-gray-600" />
         <span className="text-white">{course?.name}</span>
       </nav>
+      <div style={{height: '64px'}}></div>
 
       <div className="max-w-6xl mx-auto px-6 py-10 flex gap-8">
 
         {/* Left */}
         <div className="flex-1">
-          {/* Course header */}
           <p style={{color: '#a78bfa'}} className="text-sm font-medium mb-2 uppercase tracking-wider">{subcategory?.name}</p>
           <h1 className="text-3xl font-bold text-white mb-6">{course?.name}</h1>
 
-          {/* Description */}
           {course?.description && (
             <div style={{background: '#161b22', border: '1px solid #30363d'}} className="rounded-xl p-5 mb-6">
               <h2 className="font-semibold text-white mb-2">À propos de ce cours</h2>
@@ -83,7 +82,6 @@ export default function CoursePage() {
             </div>
           )}
 
-          {/* Tabs */}
           <div className="flex gap-2 flex-wrap mb-6">
             {SECTIONS.map(s => (
               <button key={s.key} onClick={() => setActiveSection(s.key)}
@@ -96,7 +94,6 @@ export default function CoursePage() {
             ))}
           </div>
 
-          {/* Files */}
           {files.length === 0 ? (
             <div className="text-center py-16">
               <FileText size={48} className="mx-auto mb-4 text-gray-700" />

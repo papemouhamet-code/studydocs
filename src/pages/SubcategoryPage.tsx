@@ -26,7 +26,7 @@ export default function SubcategoryPage() {
     <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
       {/* Navbar */}
-      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 sticky top-0 z-50 flex-wrap">
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 fixed top-0 left-0 right-0 z-50 flex-wrap">
         <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white transition flex items-center gap-1">
           <ArrowLeft size={16} /> Accueil
         </button>
@@ -37,6 +37,7 @@ export default function SubcategoryPage() {
         <ChevronRight size={14} className="text-gray-600" />
         <span className="text-white">{subcategory?.name}</span>
       </nav>
+      <div style={{height: '64px'}}></div>
 
       {/* Header */}
       <div className="px-6 py-12 max-w-6xl mx-auto">
