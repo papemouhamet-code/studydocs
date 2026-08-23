@@ -72,40 +72,44 @@ export default function HomePage() {
   return (
     <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
-      {/* 1. NAVBAR */}
-      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-6 fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-          <div style={{background: '#7c3aed'}} className="p-1.5 rounded-lg">
-            <BookOpen size={20} className="text-white" />
-          </div>
-          <span className="font-bold text-lg text-white">UnivPDF</span>
-          <span style={{background: '#7c3aed22', color: '#a78bfa', border: '1px solid #7c3aed44'}} className="text-xs px-2 py-0.5 rounded-full">ACADÉMIQUE</span>
-        </div>
-        <div className="flex-1 relative max-w-xl mx-auto">
-          <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
-          <input
-            style={{background: '#21262d', border: '1px solid #30363d', color: 'white'}}
-            className="w-full pl-9 pr-4 py-2 rounded-lg text-sm outline-none"
-            placeholder="Rechercher un cours..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          {searchResults.length > 0 && (
-            <div style={{background: '#161b22', border: '1px solid #30363d'}} className="absolute top-11 left-0 right-0 rounded-xl shadow-xl z-10 max-h-64 overflow-y-auto">
-              {searchResults.map(c => (
-                <div key={c.id} onClick={() => { navigate(`/course/${c.id}`); setSearch(''); setSearchResults([]) }}
-                  className="px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition">
-                  <p className="font-medium text-white text-sm">{c.name}</p>
-                  <p className="text-xs text-gray-400">{c.subcategories?.categories?.name} — {c.subcategories?.name}</p>
-                </div>
-              ))}
+      {/* NAVBAR - fixed en haut */}
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999}}>
+        <div className="px-6 py-4 flex items-center gap-6">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+            <div style={{background: '#7c3aed'}} className="p-1.5 rounded-lg">
+              <BookOpen size={20} className="text-white" />
             </div>
-          )}
+            <span className="font-bold text-lg text-white">UnivPDF</span>
+            <span style={{background: '#7c3aed22', color: '#a78bfa', border: '1px solid #7c3aed44'}} className="text-xs px-2 py-0.5 rounded-full">ACADÉMIQUE</span>
+          </div>
+          <div className="flex-1 relative max-w-xl mx-auto">
+            <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
+            <input
+              style={{background: '#21262d', border: '1px solid #30363d', color: 'white'}}
+              className="w-full pl-9 pr-4 py-2 rounded-lg text-sm outline-none"
+              placeholder="Rechercher un cours..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            {searchResults.length > 0 && (
+              <div style={{background: '#161b22', border: '1px solid #30363d', position: 'absolute', top: '44px', left: 0, right: 0, zIndex: 99999}} className="rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                {searchResults.map(c => (
+                  <div key={c.id} onClick={() => { navigate(`/course/${c.id}`); setSearch(''); setSearchResults([]) }}
+                    className="px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition">
+                    <p className="font-medium text-white text-sm">{c.name}</p>
+                    <p className="text-xs text-gray-400">{c.subcategories?.categories?.name} — {c.subcategories?.name}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
-      <div style={{height: '64px'}}></div>
 
-      {/* 2. HERO */}
+      {/* Espace pour compenser la navbar fixe */}
+      <div style={{height: '64px'}} />
+
+      {/* HERO */}
       <div className="text-center py-20 px-4">
         <h1 className="text-5xl font-bold mb-4">
           Trouvez vos <span style={{color: '#a78bfa'}}>cours universitaires</span>
@@ -113,12 +117,12 @@ export default function HomePage() {
         <p className="text-gray-400 text-lg mb-8">Accédez à des milliers de cours, TD, TP et examens universitaires</p>
       </div>
 
-      {/* 3. AD TOP */}
+      {/* AD TOP */}
       <div id="ad-top" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
 
       <div className="max-w-6xl mx-auto px-4 pb-16">
 
-        {/* 4. CATEGORIES */}
+        {/* CATEGORIES */}
         <h2 className="text-xl font-bold text-white mb-6">Catégories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-14">
           {categories.map(cat => (
@@ -133,7 +137,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* 5. AJOUTES RECEMMENT */}
+        {/* AJOUTES RECEMMENT */}
         <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
           <Star size={20} className="text-purple-400" /> Ajoutés récemment
         </h2>
@@ -157,7 +161,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* 6. VUS RECEMMENT */}
+        {/* VUS RECEMMENT */}
         <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
           <Clock size={20} className="text-purple-400" /> Vus récemment
         </h2>
@@ -178,7 +182,7 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* 7. AD BOTTOM */}
+      {/* AD BOTTOM */}
       <div id="ad-bottom" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
     </div>
   )
