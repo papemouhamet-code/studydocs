@@ -72,7 +72,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
-      {/* Navbar */}
+      {/* 1. NAVBAR */}
       <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-6 sticky top-0 z-50">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <div style={{background: '#7c3aed'}} className="p-1.5 rounded-lg">
@@ -104,7 +104,7 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* 2. HERO */}
       <div className="text-center py-20 px-4">
         <h1 className="text-5xl font-bold mb-4">
           Trouvez vos <span style={{color: '#a78bfa'}}>cours universitaires</span>
@@ -112,12 +112,12 @@ export default function HomePage() {
         <p className="text-gray-400 text-lg mb-8">Accédez à des milliers de cours, TD, TP et examens universitaires</p>
       </div>
 
-      {/* Ad top */}
+      {/* 3. AD TOP */}
       <div id="ad-top" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
 
       <div className="max-w-6xl mx-auto px-4 pb-16">
 
-        {/* Categories */}
+        {/* 4. CATEGORIES */}
         <h2 className="text-xl font-bold text-white mb-6">Catégories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-14">
           {categories.map(cat => (
@@ -132,7 +132,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* Ajoutés récemment */}
+        {/* 5. AJOUTES RECEMMENT */}
         <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
           <Star size={20} className="text-purple-400" /> Ajoutés récemment
         </h2>
@@ -156,7 +156,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Vus récemment */}
+        {/* 6. VUS RECEMMENT */}
         <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
           <Clock size={20} className="text-purple-400" /> Vus récemment
         </h2>
@@ -177,7 +177,7 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Ad bottom */}
+      {/* 7. AD BOTTOM */}
       <div id="ad-bottom" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
     </div>
   )
