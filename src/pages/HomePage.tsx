@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { BookOpen, Search, Clock, Star } from 'lucide-react'
+import { BookOpen, Search, Clock, Star, ChevronRight } from 'lucide-react'
 
 const ICONS: Record<string, string> = {
   'Informatique': '💻',
@@ -21,6 +21,26 @@ const ICONS: Record<string, string> = {
   'Environnement & énergie': '🌱',
   'Gestion & économie': '📊',
   'Télécommunications': '📶',
+}
+
+const BG_COLORS: Record<string, string> = {
+  'Informatique': 'from-blue-900 to-blue-700',
+  'Mathématiques': 'from-purple-900 to-purple-700',
+  'Physique': 'from-cyan-900 to-cyan-700',
+  'Chimie': 'from-green-900 to-green-700',
+  'Électronique & Électrotechnique': 'from-yellow-900 to-yellow-700',
+  'Automatique & Traitement du signal': 'from-orange-900 to-orange-700',
+  'Génie mécanique & industriel': 'from-red-900 to-red-700',
+  'Science des matériaux': 'from-teal-900 to-teal-700',
+  'Génie civil & BTP': 'from-stone-900 to-stone-700',
+  'Géologie & Géosciences': 'from-lime-900 to-lime-700',
+  'Hydraulique & ressources en eau': 'from-sky-900 to-sky-700',
+  'Biologie & Sciences de la vie': 'from-emerald-900 to-emerald-700',
+  'Médecine & Sciences de la santé': 'from-rose-900 to-rose-700',
+  'Agroalimentaire & nutrition': 'from-amber-900 to-amber-700',
+  'Environnement & énergie': 'from-green-900 to-teal-700',
+  'Gestion & économie': 'from-indigo-900 to-indigo-700',
+  'Télécommunications': 'from-violet-900 to-violet-700',
 }
 
 export default function HomePage() {
@@ -50,84 +70,106 @@ export default function HomePage() {
   }, [search])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-indigo-600 text-white py-12 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <BookOpen size={32} />
-            <h1 className="text-3xl font-bold">UnivPDF</h1>
+    <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
+
+      {/* Navbar */}
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-6 sticky top-0 z-50">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+          <div style={{background: '#7c3aed'}} className="p-1.5 rounded-lg">
+            <BookOpen size={20} className="text-white" />
           </div>
-          <p className="text-indigo-200 mb-6">Votre bibliothèque universitaire en ligne</p>
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              className="w-full pl-10 pr-4 py-3 rounded-xl text-gray-800 text-base outline-none"
-              placeholder="Rechercher un cours..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-            {searchResults.length > 0 && (
-              <div className="absolute top-14 left-0 right-0 bg-white rounded-xl shadow-lg z-10 max-h-64 overflow-y-auto">
-                {searchResults.map(c => (
-                  <div key={c.id} onClick={() => navigate(`/course/${c.id}`)} className="px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b last:border-0">
-                    <p className="font-medium text-gray-800">{c.name}</p>
-                    <p className="text-sm text-gray-400">{c.subcategories?.categories?.name} — {c.subcategories?.name}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <span className="font-bold text-lg text-white">UnivPDF</span>
+          <span style={{background: '#7c3aed22', color: '#a78bfa', border: '1px solid #7c3aed44'}} className="text-xs px-2 py-0.5 rounded-full">ACADÉMIQUE</span>
         </div>
+        <div className="flex-1 relative max-w-xl mx-auto">
+          <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
+          <input
+            style={{background: '#21262d', border: '1px solid #30363d', color: 'white'}}
+            className="w-full pl-9 pr-4 py-2 rounded-lg text-sm outline-none"
+            placeholder="Rechercher un cours..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          {searchResults.length > 0 && (
+            <div style={{background: '#161b22', border: '1px solid #30363d'}} className="absolute top-11 left-0 right-0 rounded-xl shadow-xl z-10 max-h-64 overflow-y-auto">
+              {searchResults.map(c => (
+                <div key={c.id} onClick={() => { navigate(`/course/${c.id}`); setSearch(''); setSearchResults([]) }}
+                  className="px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition">
+                  <p className="font-medium text-white text-sm">{c.name}</p>
+                  <p className="text-xs text-gray-400">{c.subcategories?.categories?.name} — {c.subcategories?.name}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <div className="text-center py-20 px-4">
+        <h1 className="text-5xl font-bold mb-4">
+          Trouvez vos <span style={{color: '#a78bfa'}}>cours universitaires</span>
+        </h1>
+        <p className="text-gray-400 text-lg mb-8">Accédez à des milliers de cours, TD, TP et examens universitaires</p>
       </div>
 
       {/* Ad top */}
-      <div id="ad-top" className="max-w-5xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
+      <div id="ad-top" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 pb-16">
+
         {/* Categories */}
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Catégories</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
+        <h2 className="text-xl font-bold text-white mb-6">Catégories</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-14">
           {categories.map(cat => (
             <div key={cat.id} onClick={() => navigate(`/category/${cat.id}`)}
-              className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer hover:bg-indigo-50 transition border border-gray-100">
-              <div className="text-3xl mb-2">{ICONS[cat.name] || '📚'}</div>
-              <p className="font-medium text-gray-800 text-sm">{cat.name}</p>
+              className={`bg-gradient-to-br ${BG_COLORS[cat.name] || 'from-gray-900 to-gray-700'} rounded-xl p-5 cursor-pointer hover:scale-105 transition-transform border border-gray-700 hover:border-purple-500`}>
+              <div className="text-4xl mb-3">{ICONS[cat.name] || '📚'}</div>
+              <p className="font-semibold text-white text-sm">{cat.name}</p>
+              <div className="flex items-center gap-1 mt-2 text-gray-300 text-xs">
+                <ChevronRight size={12} /> Voir les cours
+              </div>
             </div>
           ))}
         </div>
 
         {/* Ajoutés récemment */}
-        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <Star size={20} className="text-indigo-500" /> Ajoutés récemment
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <Star size={20} className="text-purple-400" /> Ajoutés récemment
         </h2>
+        <p className="text-gray-400 text-sm mb-4">Les derniers documents ajoutés sur UnivPDF</p>
         {recentFiles.length === 0 ? (
-          <p className="text-gray-400 mb-10">Aucun document ajouté pour le moment.</p>
+          <p className="text-gray-500 mb-14">Aucun document ajouté pour le moment.</p>
         ) : (
-          <div className="flex gap-4 overflow-x-auto pb-4 mb-10">
+          <div className="flex gap-4 overflow-x-auto pb-4 mb-14">
             {recentFiles.map(f => (
               <div key={f.id} onClick={() => navigate(`/course/${f.course_id}/cours/${f.id}`)}
-                className="min-w-[200px] bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer border border-gray-100 hover:bg-indigo-50 transition">
-                <p className="font-medium text-gray-800 text-sm mb-1 line-clamp-2">{f.title}</p>
+                style={{background: '#161b22', border: '1px solid #30363d', minWidth: '220px'}}
+                className="rounded-xl p-4 cursor-pointer hover:border-purple-500 transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <BookOpen size={14} className="text-purple-400" />
+                  <span style={{background: '#7c3aed33', color: '#a78bfa'}} className="text-xs px-2 py-0.5 rounded-full">{f.file_type || 'PDF'}</span>
+                </div>
+                <p className="font-medium text-white text-sm mb-1 line-clamp-2">{f.title}</p>
                 <p className="text-xs text-gray-400">{f.courses?.name}</p>
-                <span className="inline-block mt-2 text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">{f.file_type || 'PDF'}</span>
               </div>
             ))}
           </div>
         )}
 
         {/* Vus récemment */}
-        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <Clock size={20} className="text-indigo-500" /> Vus récemment
+        <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <Clock size={20} className="text-purple-400" /> Vus récemment
         </h2>
+        <p className="text-gray-400 text-sm mb-4">Les derniers documents que vous avez consultés</p>
         {recentlyViewed.length === 0 ? (
-          <p className="text-gray-400">Aucun document consulté pour le moment.</p>
+          <p className="text-gray-500">Aucun document consulté pour le moment.</p>
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-4">
             {recentlyViewed.map((item: any, i: number) => (
               <div key={i} onClick={() => navigate(`/course/${item.courseId}/cours/${item.fileId}`)}
-                className="min-w-[200px] bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer border border-gray-100 hover:bg-indigo-50 transition">
-                <p className="font-medium text-gray-800 text-sm mb-1 line-clamp-2">{item.title}</p>
+                style={{background: '#161b22', border: '1px solid #30363d', minWidth: '220px'}}
+                className="rounded-xl p-4 cursor-pointer hover:border-purple-500 transition">
+                <p className="font-medium text-white text-sm mb-1 line-clamp-2">{item.title}</p>
                 <p className="text-xs text-gray-400">{new Date(item.timestamp).toLocaleDateString('fr-FR')}</p>
               </div>
             ))}
@@ -136,7 +178,7 @@ export default function HomePage() {
       </div>
 
       {/* Ad bottom */}
-      <div id="ad-bottom" className="max-w-5xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
+      <div id="ad-bottom" className="max-w-6xl mx-auto px-4 py-2">{/* AdSense placement */}</div>
     </div>
   )
 }

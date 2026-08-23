@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { ChevronRight, FileText } from 'lucide-react'
+import { ChevronRight, FileText, ArrowLeft } from 'lucide-react'
 
 const SECTIONS = [
   { key: 'cours', label: 'Cours' },
@@ -39,35 +39,42 @@ export default function CoursePage() {
   const tags = course?.tags ? course.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : []
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-indigo-600 text-white py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-2 text-indigo-200 text-sm mb-4 flex-wrap">
-            <span className="cursor-pointer hover:text-white" onClick={() => navigate('/')}>Accueil</span>
-            <ChevronRight size={14} />
-            <span className="cursor-pointer hover:text-white" onClick={() => navigate(`/category/${category?.id}`)}>{category?.name}</span>
-            <ChevronRight size={14} />
-            <span className="cursor-pointer hover:text-white" onClick={() => navigate(`/category/${category?.id}/${subcategory?.id}`)}>{subcategory?.name}</span>
-            <ChevronRight size={14} />
-            <span className="text-white">{course?.name}</span>
-          </div>
-          <h1 className="text-2xl font-bold">{course?.name}</h1>
-        </div>
-      </div>
+    <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 flex gap-8">
-        {/* Left - Description & Tabs */}
+      {/* Navbar */}
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 sticky top-0 z-50 flex-wrap">
+        <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white transition flex items-center gap-1">
+          <ArrowLeft size={16} /> Accueil
+        </button>
+        <ChevronRight size={14} className="text-gray-600" />
+        <button onClick={() => navigate(`/category/${category?.id}`)} className="text-gray-400 hover:text-white transition">
+          {category?.name}
+        </button>
+        <ChevronRight size={14} className="text-gray-600" />
+        <button onClick={() => navigate(`/category/${category?.id}/${subcategory?.id}`)} className="text-gray-400 hover:text-white transition">
+          {subcategory?.name}
+        </button>
+        <ChevronRight size={14} className="text-gray-600" />
+        <span className="text-white">{course?.name}</span>
+      </nav>
+
+      <div className="max-w-6xl mx-auto px-6 py-10 flex gap-8">
+
+        {/* Left */}
         <div className="flex-1">
+          {/* Course header */}
+          <p style={{color: '#a78bfa'}} className="text-sm font-medium mb-2 uppercase tracking-wider">{subcategory?.name}</p>
+          <h1 className="text-3xl font-bold text-white mb-6">{course?.name}</h1>
+
           {/* Description */}
           {course?.description && (
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-6">
-              <h2 className="font-semibold text-gray-800 mb-2">À propos de ce cours</h2>
-              <p className="text-gray-600 text-sm leading-relaxed">{course.description}</p>
+            <div style={{background: '#161b22', border: '1px solid #30363d'}} className="rounded-xl p-5 mb-6">
+              <h2 className="font-semibold text-white mb-2">À propos de ce cours</h2>
+              <p className="text-gray-400 text-sm leading-relaxed">{course.description}</p>
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {tags.map((tag: string, i: number) => (
-                    <span key={i} className="bg-indigo-50 text-indigo-600 text-xs px-3 py-1 rounded-full border border-indigo-100">
+                    <span key={i} style={{background: '#7c3aed22', color: '#a78bfa', border: '1px solid #7c3aed44'}} className="text-xs px-3 py-1 rounded-full">
                       #{tag}
                     </span>
                   ))}
@@ -80,7 +87,10 @@ export default function CoursePage() {
           <div className="flex gap-2 flex-wrap mb-6">
             {SECTIONS.map(s => (
               <button key={s.key} onClick={() => setActiveSection(s.key)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition ${activeSection === s.key ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-indigo-50'}`}>
+                style={activeSection === s.key
+                  ? {background: '#7c3aed', color: 'white'}
+                  : {background: '#161b22', color: '#9ca3af', border: '1px solid #30363d'}}
+                className="px-4 py-2 rounded-full text-sm font-medium transition hover:border-purple-500">
                 {s.label}
               </button>
             ))}
@@ -88,38 +98,43 @@ export default function CoursePage() {
 
           {/* Files */}
           {files.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
-              <FileText size={48} className="mx-auto mb-4 opacity-30" />
-              <p>Aucun fichier disponible dans cette section.</p>
+            <div className="text-center py-16">
+              <FileText size={48} className="mx-auto mb-4 text-gray-700" />
+              <p className="text-gray-500">Aucun fichier disponible dans cette section.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {files.map(f => (
                 <div key={f.id} onClick={() => navigate(`/course/${courseId}/${activeSection}/${f.id}`)}
-                  className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer border border-gray-100 hover:bg-indigo-50 transition text-center">
-                  <FileText size={32} className="text-indigo-400 mx-auto mb-2" />
-                  <p className="font-medium text-gray-800 text-sm line-clamp-2">{f.title}</p>
-                  <span className="inline-block mt-2 text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">{f.file_type || 'PDF'}</span>
+                  style={{background: '#161b22', border: '1px solid #30363d'}}
+                  className="rounded-xl p-4 cursor-pointer hover:border-purple-500 transition text-center group">
+                  <div style={{background: '#7c3aed22'}} className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <FileText size={24} style={{color: '#a78bfa'}} />
+                  </div>
+                  <p className="font-medium text-white text-sm line-clamp-2">{f.title}</p>
+                  <span style={{background: '#7c3aed33', color: '#a78bfa'}} className="inline-block mt-2 text-xs px-2 py-0.5 rounded-full">{f.file_type || 'PDF'}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Right - File list */}
+        {/* Right sidebar */}
         <div className="hidden lg:block w-56 shrink-0">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sticky top-4">
-            <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Fichiers disponibles</p>
+          <div style={{background: '#161b22', border: '1px solid #30363d'}} className="rounded-xl p-4 sticky top-20">
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-3">Fichiers disponibles</p>
             <div className="flex flex-col gap-2">
-              {files.map((f, i) => (
-                <div key={f.id} onClick={() => navigate(`/course/${courseId}/${activeSection}/${f.id}`)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm bg-gray-50 hover:bg-indigo-50 hover:text-indigo-600 transition border border-gray-100">
-                  <span className="text-xs text-gray-400 w-5">{i + 1}</span>
-                  <span className="line-clamp-1">{f.title}</span>
-                </div>
-              ))}
-              {files.length === 0 && (
-                <p className="text-xs text-gray-400">Aucun fichier</p>
+              {files.length === 0 ? (
+                <p className="text-xs text-gray-600">Aucun fichier</p>
+              ) : (
+                files.map((f, i) => (
+                  <div key={f.id} onClick={() => navigate(`/course/${courseId}/${activeSection}/${f.id}`)}
+                    style={{border: '1px solid #30363d'}}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm hover:border-purple-500 hover:text-purple-400 text-gray-400 transition">
+                    <span className="text-xs text-gray-600 w-5">{i + 1}</span>
+                    <span className="line-clamp-1">{f.title}</span>
+                  </div>
+                ))
               )}
             </div>
           </div>

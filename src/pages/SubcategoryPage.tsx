@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { BookOpen, ChevronRight } from 'lucide-react'
+import { BookOpen, ChevronRight, ArrowLeft } from 'lucide-react'
 
 export default function SubcategoryPage() {
   const { categoryId, subcategoryId } = useParams()
@@ -23,37 +23,48 @@ export default function SubcategoryPage() {
   }, [subcategoryId])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-indigo-600 text-white py-8 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-2 text-indigo-200 text-sm mb-4">
-            <span className="cursor-pointer hover:text-white" onClick={() => navigate('/')}>Accueil</span>
-            <ChevronRight size={14} />
-            <span className="cursor-pointer hover:text-white" onClick={() => navigate(`/category/${categoryId}`)}>{category?.name}</span>
-            <ChevronRight size={14} />
-            <span className="text-white">{subcategory?.name}</span>
-          </div>
-          <h1 className="text-2xl font-bold">{subcategory?.name}</h1>
-          <p className="text-indigo-200">{courses.length} cours</p>
-        </div>
+    <div className="min-h-screen" style={{background: '#0d1117', color: 'white'}}>
+
+      {/* Navbar */}
+      <nav style={{background: '#161b22', borderBottom: '1px solid #30363d'}} className="px-6 py-4 flex items-center gap-3 sticky top-0 z-50 flex-wrap">
+        <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white transition flex items-center gap-1">
+          <ArrowLeft size={16} /> Accueil
+        </button>
+        <ChevronRight size={14} className="text-gray-600" />
+        <button onClick={() => navigate(`/category/${categoryId}`)} className="text-gray-400 hover:text-white transition">
+          {category?.name}
+        </button>
+        <ChevronRight size={14} className="text-gray-600" />
+        <span className="text-white">{subcategory?.name}</span>
+      </nav>
+
+      {/* Header */}
+      <div className="px-6 py-12 max-w-6xl mx-auto">
+        <p style={{color: '#a78bfa'}} className="text-sm font-medium mb-2 uppercase tracking-wider">{category?.name}</p>
+        <h1 className="text-4xl font-bold text-white mb-2">{subcategory?.name}</h1>
+        <p className="text-gray-400">{courses.length} cours disponibles</p>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Courses list */}
+      <div className="max-w-6xl mx-auto px-6 pb-16">
         {courses.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <BookOpen size={48} className="mx-auto mb-4 opacity-30" />
-            <p>Aucun cours disponible pour le moment.</p>
+          <div className="text-center py-20">
+            <BookOpen size={48} className="mx-auto mb-4 text-gray-600" />
+            <p className="text-gray-500">Aucun cours disponible pour le moment.</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {courses.map(course => (
               <div key={course.id} onClick={() => navigate(`/course/${course.id}`)}
-                className="bg-white rounded-xl px-5 py-4 shadow-sm hover:shadow-md cursor-pointer border border-gray-100 hover:bg-indigo-50 transition flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <BookOpen size={20} className="text-indigo-400" />
-                  <p className="font-medium text-gray-800">{course.name}</p>
+                style={{background: '#161b22', border: '1px solid #30363d'}}
+                className="flex items-center justify-between px-5 py-4 rounded-xl cursor-pointer hover:border-purple-500 transition group">
+                <div className="flex items-center gap-4">
+                  <div style={{background: '#7c3aed22'}} className="p-2 rounded-lg">
+                    <BookOpen size={18} style={{color: '#a78bfa'}} />
+                  </div>
+                  <p className="font-medium text-white">{course.name}</p>
                 </div>
-                <ChevronRight size={18} className="text-gray-300" />
+                <ChevronRight size={18} className="text-gray-600 group-hover:text-purple-400 transition" />
               </div>
             ))}
           </div>
